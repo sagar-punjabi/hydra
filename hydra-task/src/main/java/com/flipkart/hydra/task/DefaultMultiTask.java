@@ -31,19 +31,21 @@ public class DefaultMultiTask extends DefaultTask {
 
     protected final Composer loopComposer;
     protected final ExecutorService executor;
+    protected final boolean isModifying;
 
     public DefaultMultiTask(ExecutorService executor, Class<? extends Callable> callableClass, Object loopOverContext, Object context) throws ComposerInstantiationException {
         this(executor, callableClass, context, loopOverContext, false);
     }
 
     public DefaultMultiTask(ExecutorService executor, Class<? extends Callable> callableClass, Object context, Object loopOverContext, boolean isAlreadyParsed) throws ComposerInstantiationException {
-        this(executor, callableClass, new DefaultComposer(context, isAlreadyParsed), new DefaultComposer(loopOverContext, isAlreadyParsed));
+        this(executor, callableClass, new DefaultComposer(context, isAlreadyParsed), new DefaultComposer(loopOverContext, isAlreadyParsed), false);
     }
 
-    public DefaultMultiTask(ExecutorService executor, Class<? extends Callable> callableClass, Composer composer, Composer loopComposer) {
+    public DefaultMultiTask(ExecutorService executor, Class<? extends Callable> callableClass, Composer composer, Composer loopComposer, boolean isModifying) {
         super(callableClass, composer);
         this.executor = executor;
         this.loopComposer = loopComposer;
+        this.isModifying = isModifying;
     }
 
     @Override
@@ -67,5 +69,9 @@ public class DefaultMultiTask extends DefaultTask {
         }
 
         return new ArrayList<>(dependencies);
+    }
+
+    public boolean isModifying() {
+        return isModifying;
     }
 }
